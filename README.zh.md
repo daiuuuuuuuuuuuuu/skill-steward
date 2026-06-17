@@ -1,4 +1,4 @@
-# skill-keeper · Skill 生态管理器
+# skill-steward · Skill 生态管理器
 
 **两个 Claude Code skill，一套 Skill 生态管理方案。**
 
@@ -17,7 +17,7 @@
 | "有没有动画相关的 skill" | 关键词搜索 description → 展示候选 |
 | "帮我设计个登录页" | 智能匹配最相关的设计 skill |
 
-### 🔧 skill-keeper — 生态协调器（读写）
+### 🔧 skill-steward — 生态协调器（读写）
 
 管理全局 skill、打包 skill、与 cc-switch 的同步、漂移检测、健康检查。
 
@@ -38,17 +38,17 @@
 ## 📦 安装
 
 ```bash
-git clone https://github.com/daiuuuuuuuuuuuuu/skill-keeper.git
-cd skill-keeper
+git clone https://github.com/daiuuuuuuuuuuuuu/skill-steward.git
+cd skill-steward
 cp -r skills/skill-packs ~/.claude/skills/skill-packs
-cp -r skills/skill-keeper ~/.claude/skills/skill-keeper
+cp -r skills/skill-steward ~/.claude/skills/skill-steward
 ```
 
 或：
 
 ```bash
-npx skills add daiuuuuuuuuuuuuu/skill-keeper --skill skill-packs
-npx skills add daiuuuuuuuuuuuuu/skill-keeper --skill skill-keeper
+npx skills add daiuuuuuuuuuuuuu/skill-steward --skill skill-packs
+npx skills add daiuuuuuuuuuuuuu/skill-steward --skill skill-steward
 ```
 
 ---
@@ -56,15 +56,15 @@ npx skills add daiuuuuuuuuuuuuu/skill-keeper --skill skill-keeper
 ## 🧭 两个 Skill 的边界
 
 - **skill-packs**：负责"用"——列出、搜索、加载执行
-- **skill-keeper**：负责"管"——增删改查、同步、健康检查
+- **skill-steward**：负责"管"——增删改查、同步、健康检查
 
-结构性修改只能通过 skill-keeper 进行。
+结构性修改只能通过 skill-steward 进行。
 
 ---
 
 ## 🏷️ 标签
 
-`claude-code` `claude-code-skill` `skill-management` `skill-keeper` `skill-packs` `ai-agent` `anthropic` `cc-switch` `Claude技能` `技能管理` `技能生态` `AI工具`
+`claude-code` `claude-code-skill` `skill-management` `skill-steward` `skill-packs` `ai-agent` `anthropic` `cc-switch` `Claude技能` `技能管理` `技能生态` `AI工具`
 
 ---
 

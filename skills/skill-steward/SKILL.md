@@ -1,5 +1,5 @@
 ---
-name: skill-keeper
+name: skill-steward
 description: 管理整个 skill 生态（增删改查 + diff + sync + 健康检查 + cc-switch 协调）
 ---
 
@@ -153,7 +153,7 @@ ln -s "<源路径>" ~/.cc-switch/skills/<skill-name>
 
 ```yaml
 source: <原路径>
-managed-by: skill-keeper
+managed-by: skill-steward
 timestamp: <当前时间>
 ```
 
@@ -285,11 +285,11 @@ npx skills add <name>
 # 🧭 与 skill-packs 的边界
 
 - `skill-packs`：只负责**读取和引导使用**
-- `skill-keeper`：所有**结构性修改**的唯一入口
+- `skill-steward`：所有**结构性修改**的唯一入口
 
 用户说"用 design skill" → skill-packs 处理
-用户说"把 design 打包" → skill-keeper 处理
-用户说"为什么 sync 后少了" → skill-keeper diff 处理
+用户说"把 design 打包" → skill-steward 处理
+用户说"为什么 sync 后少了" → skill-steward diff 处理
 
 ---
 

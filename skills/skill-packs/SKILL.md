@@ -22,7 +22,7 @@ description: Skill 包运行时加载器 —— 发现、搜索、按需加载 s
 - 安装
 - 修改结构
 
-结构性操作必须由 `skill-keeper` 执行。
+结构性操作必须由 `skill-steward` 执行。
 
 ---
 
@@ -44,7 +44,7 @@ PACK_ROOT=~/.claude/skill-packs
 ```
 
 若 `PACK_ROOT` 不存在，提示：
-> "未发现 skill-packs 目录。用 skill-keeper 初始化。"
+> "未发现 skill-packs 目录。用 skill-steward 初始化。"
 
 ---
 
@@ -166,23 +166,23 @@ find "$PACK_ROOT" -maxdepth 3 -type d -name "<skill-name>" | head -1
 
 | 场景 | 处理 |
 |------|------|
-| skill 在 pack 中不存在 | 提示名称不对，建议搜索或 `skill-keeper install` |
-| skill 无 SKILL.md | 报告损坏，建议 `skill-keeper health` |
+| skill 在 pack 中不存在 | 提示名称不对，建议搜索或 `skill-steward install` |
+| skill 无 SKILL.md | 报告损坏，建议 `skill-steward health` |
 | 用户要加载"所有" skill | 警告 token 成本，确认后逐个加载 |
-| 用户要求结构性修改 | 拒绝，引导到 `skill-keeper` |
+| 用户要求结构性修改 | 拒绝，引导到 `skill-steward` |
 | pack 目录为空 | 标注 `(空)` |
 
 ---
 
-# 🧭 与 skill-keeper 的边界
+# 🧭 与 skill-steward 的边界
 
 | 操作 | 谁负责 |
 |------|--------|
 | 列出/搜索/加载 skill | skill-packs（我） |
-| 安装/删除/移动/同步 skill | skill-keeper |
-| 健康检查/生态快照 | skill-keeper |
+| 安装/删除/移动/同步 skill | skill-steward |
+| 健康检查/生态快照 | skill-steward |
 
-用户说"删掉这个 skill" → 拒绝，引导到 `skill-keeper remove`
+用户说"删掉这个 skill" → 拒绝，引导到 `skill-steward remove`
 
 ---
 

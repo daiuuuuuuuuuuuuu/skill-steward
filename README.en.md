@@ -1,4 +1,4 @@
-# skill-keeper · Skill Ecosystem Manager
+# skill-steward · Skill Ecosystem Manager
 
 **Two Claude Code skills, one complete skill ecosystem management solution.**
 
@@ -17,7 +17,7 @@ Discovers, searches, and loads packed non-global skills on demand. Never modifie
 | "Any animation skills?" | Keyword search descriptions → show candidates |
 | "Design a login page" | Smart match the most relevant design skill |
 
-### 🔧 skill-keeper — Ecosystem Coordinator (Read-Write)
+### 🔧 skill-steward — Ecosystem Coordinator (Read-Write)
 
 Manages global skills, packed skills, cc-switch sync, drift detection, and health checks.
 
@@ -38,17 +38,17 @@ Manages global skills, packed skills, cc-switch sync, drift detection, and healt
 ## 📦 Install
 
 ```bash
-git clone https://github.com/daiuuuuuuuuuuuuu/skill-keeper.git
-cd skill-keeper
+git clone https://github.com/daiuuuuuuuuuuuuu/skill-steward.git
+cd skill-steward
 cp -r skills/skill-packs ~/.claude/skills/skill-packs
-cp -r skills/skill-keeper ~/.claude/skills/skill-keeper
+cp -r skills/skill-steward ~/.claude/skills/skill-steward
 ```
 
 Or one-liner:
 
 ```bash
-npx skills add daiuuuuuuuuuuuuu/skill-keeper --skill skill-packs
-npx skills add daiuuuuuuuuuuuuu/skill-keeper --skill skill-keeper
+npx skills add daiuuuuuuuuuuuuu/skill-steward --skill skill-packs
+npx skills add daiuuuuuuuuuuuuu/skill-steward --skill skill-steward
 ```
 
 ---
@@ -56,15 +56,15 @@ npx skills add daiuuuuuuuuuuuuu/skill-keeper --skill skill-keeper
 ## 🧭 Boundary
 
 - **skill-packs**: "Use" — list, search, load, execute
-- **skill-keeper**: "Manage" — CRUD, sync, health checks
+- **skill-steward**: "Manage" — CRUD, sync, health checks
 
-All structural modifications go through skill-keeper.
+All structural modifications go through skill-steward.
 
 ---
 
 ## 🏷️ Tags
 
-`claude-code` `claude-code-skill` `skill-management` `skill-keeper` `skill-packs` `ai-agent` `anthropic` `cc-switch` `ecosystem` `devtools`
+`claude-code` `claude-code-skill` `skill-management` `skill-steward` `skill-packs` `ai-agent` `anthropic` `cc-switch` `ecosystem` `devtools`
 
 ---
 
