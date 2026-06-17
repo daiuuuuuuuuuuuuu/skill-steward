@@ -10,3 +10,4 @@
 - agent-browser: 浏览器控制 Agent
 - self-improving-agent: 自动记忆管理与技能提取
 - wrap: WRAP 决策框架
+- github-repo-optimizer: GitHub 仓库发现度优化（SEO/Topic/双语/README 结构）
