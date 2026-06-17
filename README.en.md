@@ -38,7 +38,7 @@ Manages global skills, packed skills, cc-switch sync, drift detection, and healt
 ## 📦 Install
 
 ```bash
-git clone https://github.com/n15893791173-prog/skill-keeper.git
+git clone https://github.com/daiuuuuuuuuuuuuu/skill-keeper.git
 cd skill-keeper
 cp -r skills/skill-packs ~/.claude/skills/skill-packs
 cp -r skills/skill-keeper ~/.claude/skills/skill-keeper
@@ -47,8 +47,8 @@ cp -r skills/skill-keeper ~/.claude/skills/skill-keeper
 Or one-liner:
 
 ```bash
-npx skills add n15893791173-prog/skill-keeper --skill skill-packs
-npx skills add n15893791173-prog/skill-keeper --skill skill-keeper
+npx skills add daiuuuuuuuuuuuuu/skill-keeper --skill skill-packs
+npx skills add daiuuuuuuuuuuuuu/skill-keeper --skill skill-keeper
 ```
 
 ---
