@@ -1,6 +1,6 @@
 ---
 name: skill-steward
-description: Skill 生态治理层。负责 pack 结构管理、PACK.md 维护、归类建议、结构移动、健康审计、安装与移除。不执行 skill，不做 cc-switch 同步。
+description: Skill 生态结构治理器。当用户需要新增、删除、移动或重组 skill，调整 pack 结构，或执行结构健康审计时触发。负责 pack 管理与 PACK.md 维护，不执行专项任务，不参与运行时调度。
 ---
 
 # 🎯 角色

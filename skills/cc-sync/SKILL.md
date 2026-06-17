@@ -1,6 +1,6 @@
 ---
 name: cc-sync
-description: Skill 分发层。负责 Claude Code 与 cc-switch 生态之间的同步、差异对比(diff)、漂移检测与修复(repair)。不管理结构，不执行 skill。
+description: Skill 生态分发同步器。当用户需要将 skill 同步到 cc-switch、对比差异、修复漂移时触发。负责 link/copy 策略执行与副本追踪，不管理结构，不执行专项任务。
 ---
 
 # 🎯 角色
