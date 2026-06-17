@@ -1,59 +1,146 @@
 ---
 name: skill-packs
-description: Skill 包运行时加载器 —— 发现、搜索、按需加载 skill-packs 中的非全局 skill。只读，不修改结构。
+description: 专项能力调度器 —— 当用户请求具体产出（设计/动画/工具/工程）时触发。基于 steward 注册表的结构化匹配：type 过滤 → aliases 命中 → priority 排序。30+ 专项 skill 可用。只读。
 ---
 
 # 🎯 角色定位
 
-你是 Skill Packs 运行时加载器。
+你是专项能力调度器。
 
-职责：
-- 列出可用 pack
-- 列出 pack 内 skill
-- 搜索 skill
-- 按需加载 skill
-- 智能选择最相关 skill
+你基于 `skill-steward` 维护的注册表进行结构化匹配，按需加载最合适的专项 skill。
 
-你**不负责**：
-- 删除
-- 重命名
-- 移动
-- 同步
-- 安装
-- 修改结构
-
-结构性操作必须由 `skill-steward` 执行。
+你**不负责**结构修改。所有增删改由 `skill-steward` 执行。
 
 ---
 
 # 🧠 核心原则
 
-1. 自动发现 pack（不写死目录）
-2. 默认最小加载（只加载必要 skill）
-3. 多匹配必须确认
-4. 两阶段加载（元信息 → 完整加载）
-5. 不一次性读取全部 SKILL.md
-6. 只读文件系统
+1. 基于 steward 注册表匹配（不自己发明 skill）
+2. 默认最小加载（只加载最优 1 个 skill）
+3. 多候选必须让用户确认
+4. 两阶段加载（元信息 → 完整 SKILL.md）
+5. 只读文件系统
 
 ---
 
-# 📂 根目录
+# ⚡ 触发前置判断
 
-```
-PACK_ROOT=~/.claude/skill-packs
-```
+**触发**：任务属于"具体产出/实现类"。
+**不触发**：纯理论讨论、根因分析、方法论探索（走全局方法论 skill）。
 
-若 `PACK_ROOT` 不存在，提示：
-> "未发现 skill-packs 目录。用 skill-steward 初始化。"
+| 触发 ✅ | 不触发 ❌ |
+|---------|----------|
+| 设计界面、网页、App UI | 讨论设计哲学 |
+| 制作原型、幻灯片、高保真稿 | "为什么用户不喜欢这个设计"（走 5whys） |
+| 添加动画（GSAP/滚动/时间线） | 优先级排序（走 eisenhower/rice） |
+| 搜索图标、查找资料 | 复盘项目（走 aar） |
+| 构建 Agent、创建 skill、配置 MCP | SWOT 分析（走 swot） |
+| 优化 React/Next.js 性能 | 日常闲聊 |
 
 ---
 
-# 🔍 0. Pack 自动发现
+# 🧭 匹配算法
 
-每次操作前动态发现 pack：
+## 数据来源
+
+**step 0**：读 `skill-steward` 的 SKILL.md 中"完整注册表"章节，获取 34 个 skill 的 6 字段信息。每次匹配前重新读取以获取最新注册表。
+
+## 四层匹配
+
+```
+用户请求："帮我做一个网站前端设计"
+  ↓
+Layer 1: type 过滤
+  任务 type = design
+  候选：frontend-design, huashu-design, web-prototype, impeccable, sleek-design, design
+  ↓
+Layer 2: aliases 命中
+  "网站" → frontend-design (aliases: ui, 页面, 网站)  ✅ 精确命中
+  "前端" → frontend-design (aliases: ui, 页面, 网站)  ✅ 前端↔ui 语义相关
+  "设计" → 全部 design type 都匹配
+  ↓ frontend-design 得分最高（2 个 aliases 命中）
+Layer 3: description 语义匹配
+  "前端界面设计与实现" → 完全匹配用户意图
+  ↓
+Layer 4: priority 排序
+  frontend-design priority=5 → 🏆 胜出
+```
+
+## 匹配规则
+
+| 层 | 做什么 | 权重 |
+|----|--------|:--:|
+| type 过滤 | 判断任务属于哪个 type，只保留该 type 的 skill | 硬过滤 |
+| aliases 命中 | 用户原话中的词是否命中 skill 的 aliases | 高 |
+| description | aliases 无命中时，语义对比 description | 中 |
+| priority | 多候选时选 priority 最高的 | 裁决 |
+
+---
+
+# 📖 加载流程（两阶段）
+
+## 阶段一：匹配 + 确认
+
+1. 读 steward 注册表
+2. 按四层匹配算法找到最优 skill
+3. 展示候选：
+
+```
+🏆 匹配结果：frontend-design (type=design, priority=5)
+   描述：前端界面设计与实现
+   aliases: ui, 页面, 网站
+
+备选（score 递减）：
+   2. huashu-design (priority=5) — HTML 高保真原型/幻灯片/动画
+   3. web-prototype (priority=4) — Web 原型快速构建
+
+是否加载 frontend-design？
+```
+
+4. 若只有 1 个明确候选（score 显著高于其他）→ 直接进入阶段二
+
+## 阶段二：加载执行
+
+1. 在 `~/.claude/skill-packs/<pack>/<name>/` 定位 SKILL.md
+2. 读取完整内容
+3. 按该 skill 的指令执行任务
+
+---
+
+# 🔍 搜索
+
+用户不确定名称时，用 steward 注册表的 aliases 和 description 模糊匹配：
+
+```
+搜索：注册表中所有 skill 的 aliases + description
+匹配：包含用户关键词 → 按 priority 排序 → 列出候选
+```
+
+---
+
+# ⚠️ 冲突处理
+
+多个 skill 得分接近（priority 相同，aliases 命中数相同）：
+
+```
+多个匹配：
+  1. [gsap] gsap-core (5) — GSAP 核心动画能力
+  2. [gsap] gsap-timeline (5) — GSAP 时间线编排
+
+用户意图不够明确，请选择：
+  [1] gsap-core — 通用动画
+  [2] gsap-timeline — 时间线/序列动画
+  [3] 加载全部 GSAP 相关 skill
+```
+
+---
+
+# 📂 Pack 自动发现
+
+列出 pack 时动态扫描：
 
 ```bash
-for pack in "$PACK_ROOT"/*/; do
+for pack in ~/.claude/skill-packs/*/; do
   [ -d "$pack" ] && basename "$pack"
 done
 ```
@@ -62,114 +149,14 @@ done
 
 ---
 
-# 📋 1. 列出（两阶段）
-
-## 阶段一：仅 pack 名
-
-用户说"有哪些包"或"/skill-packs"时，只列 pack 名和 skill 数量：
-
-```bash
-for pack in "$PACK_ROOT"/*/; do
-  [ -d "$pack" ] || continue
-  name=$(basename "$pack")
-  count=$(find "$pack" -maxdepth 1 -type d | wc -l)
-  count=$((count - 1))  # 减去自身
-  echo "- $name ($count)"
-done
-```
-
-## 阶段二：展开某个 pack
-
-用户指定某个 pack 时，只列出 skill 名称和 description（仅读 frontmatter，不读 body）：
-
-```bash
-pack_dir="$PACK_ROOT/<pack-name>"
-for d in "$pack_dir"/*/; do
-  [ -d "$d" ] || continue
-  name=$(basename "$d")
-  desc=$(head -5 "$d/SKILL.md" 2>/dev/null | grep 'description:' | head -1 | sed 's/description: //')
-  [ -z "$desc" ] && desc="(无描述)"
-  echo "- $name: $desc"
-done
-```
-
----
-
-# 🔎 2. 搜索
-
-用户说"有没有 XX 相关的 skill"或"搜索 XX"时：
-
-## 策略：description 关键词匹配
-
-```bash
-keyword="<用户输入的关键词>"
-find "$PACK_ROOT" -name "SKILL.md" -exec grep -il "$keyword" {} \; | while read f; do
-  dir=$(dirname "$f")
-  name=$(basename "$dir")
-  pack=$(echo "$f" | sed 's|.*/skill-packs/||; s|/.*||')
-  desc=$(head -5 "$f" | grep 'description:' | sed 's/description: //')
-  echo "[$pack] $name: $desc"
-done
-```
-
----
-
-# 📖 3. 加载（两阶段）
-
-## 阶段一：匹配 + 确认
-
-用户说"用 <skill-name>"或"加载 <skill>"时：
-
-1. 在 `$PACK_ROOT` 下精确搜索目录名：
-
-```bash
-find "$PACK_ROOT" -maxdepth 3 -type d -name "<skill-name>" | head -1
-```
-
-2. 若找到**唯一匹配** → 进入阶段二（加载）
-
-3. 若**多个匹配**（同名在不同 pack）→ 列出所有匹配，要求用户确认：
-
-```
-找到多个匹配：
-- [design] frontend-design
-- [tools] frontend-design
-请确认使用哪个？
-```
-
-4. 若**零匹配**（目录名不精确）→ 模糊搜索 description 关键词，展示候选列表，要求确认。
-
-## 阶段二：加载执行
-
-用户确认后，读取完整 SKILL.md 并按指令执行：
-
-```
-读取 SKILL.md → 理解指令 → 执行任务
-```
-
----
-
-# 🧠 4. 智能选择
-
-用户未指定具体 skill 名，但描述了需求时：
-> "帮我设计个登录页"
-> "这个动画怎么优化"
-
-1. 从用户需求中提取关键词
-2. 搜索所有包的 description 匹配
-3. 按匹配度排序，列出前 3 个候选
-4. 用户确认后加载最相关的
-
----
-
-# ⚠️ 5. 边界情况
+# 边界情况
 
 | 场景 | 处理 |
 |------|------|
-| skill 在 pack 中不存在 | 提示名称不对，建议搜索或 `skill-steward install` |
+| 注册表无匹配 | "包内暂无匹配的专项 skill。如需安装：skill-steward install <name>" |
 | skill 无 SKILL.md | 报告损坏，建议 `skill-steward health` |
-| 用户要加载"所有" skill | 警告 token 成本，确认后逐个加载 |
-| 用户要求结构性修改 | 拒绝，引导到 `skill-steward` |
+| 用户要"全部"加载 | 警告 token 成本，逐 pack 确认 |
+| 用户做结构性修改 | 拒绝，引导到 `skill-steward` |
 | pack 目录为空 | 标注 `(空)` |
 
 ---
@@ -178,19 +165,17 @@ find "$PACK_ROOT" -maxdepth 3 -type d -name "<skill-name>" | head -1
 
 | 操作 | 谁负责 |
 |------|--------|
-| 列出/搜索/加载 skill | skill-packs（我） |
-| 安装/删除/移动/同步 skill | skill-steward |
-| 健康检查/生态快照 | skill-steward |
-
-用户说"删掉这个 skill" → 拒绝，引导到 `skill-steward remove`
+| 匹配 + 加载 + 执行 skill | skill-packs（我） |
+| 注册表维护 | skill-steward |
+| 安装/删除/移动/同步 | skill-steward |
+| 健康检查 | skill-steward |
 
 ---
 
 # 🏁 原则
 
-1. 自动发现 pack（不写死目录）
-2. 默认最小加载（只加载必要 skill）
-3. 多匹配必须确认
-4. 两阶段加载（元信息 → 完整加载）
-5. 不一次性读取全部 SKILL.md
-6. 只读文件系统
+1. 基于 steward 注册表，不自己发明 skill
+2. 默认 1 个最优 skill
+3. 多候选必须确认
+4. 两阶段加载（元信息 → 完整）
+5. 只读文件系统

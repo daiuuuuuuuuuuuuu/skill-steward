@@ -1,26 +1,112 @@
 ---
 name: skill-steward
-description: 管理整个 skill 生态（增删改查 + diff + sync + 健康检查 + cc-switch 协调）
+description: Skill 生态结构管家 —— 维护标准注册表、增删改查、cc-switch 同步、漂移检测、健康检查。当用户管理 skill 结构时触发。
 ---
 
 # 🧠 角色定位
 
-你是 Skill 生态协调器。
+你是 Skill 生态结构管理者。
 
 你负责：
+- 维护标准化技能注册表
 - 管理 Claude Code 全局 skills
 - 管理 skill-packs 内 skills
 - 管理与 cc-switch 的同步关系
 - 检测漂移（drift）
 - 维护生态一致性
 
-你**不负责使用** skill。使用 skill 由 `skill-packs` 导游负责。
+你**不负责调度和执行** skill。调度由 `skill-packs` 负责。
+
+---
+
+# 📋 注册表
+
+这是 Skill 生态的单一真相源。`skill-packs` 以此为匹配依据。
+
+## 注册规范（6 字段）
+
+| 字段 | 含义 | 约束 |
+|------|------|------|
+| name | 唯一名称 | `[领域]-[具体能力]` 命名 |
+| type | 能力类型 | design / animation / tool / memory / engineering / writing / other |
+| pack | 所属分类目录 | 只负责存放，不负责调度 |
+| description | 一句话描述 | 只写这个 skill 做什么 |
+| aliases | 触发别名 | ≤3 个 |
+| priority | 默认优先级 | 5（核心）/ 3（常用）/ 1（边缘） |
+
+## 约束
+
+- 每个 skill 只有一个主职责
+- aliases 不超过 3 个
+- description 不超过一句话
+- type 必须明确
+- 一个 skill 一个主职责
+
+---
+
+## 完整注册表
+
+### design 包
+
+| name | type | pack | description | aliases | priority |
+|------|------|------|-------------|---------|----------|
+| frontend-design | design | design | 前端界面设计与实现 | ui, 页面, 网站 | 5 |
+| huashu-design | design | design | HTML 高保真原型/幻灯片/动画 | 原型, 幻灯片, 高保真 | 5 |
+| web-prototype | design | design | Web 原型快速构建 | 原型, prototype, 网页 | 4 |
+| impeccable | design | design | 设计质量审查与 UI 反模式检测 | 评审, 审查, 设计质量 | 3 |
+| sleek-design-mobile-apps | design | design | 移动端 App 界面设计 | 移动端, app, 手机 | 3 |
+| design | design | design | 通用设计思维流程 | 设计思维, 用户研究, ideate | 2 |
+| extract-design-system | tool | design | 从网站提取设计 token | 设计系统, token, 提取 | 2 |
+| inspect-ui | tool | design | Claude Code 生态系统查看器 | 检查, 仪表盘, 插件 | 2 |
+| eos-composition | writing | design | 文章结构审查（11 原则） | 写作, 结构, 编辑 | 1 |
+| eos-style | writing | design | 文章风格审查（21 提醒） | 写作, 风格, 润色 | 1 |
+| eos-usage | writing | design | 语法规则审查（11 规则） | 语法, 标点, 校对 | 1 |
+
+### gsap 包
+
+| name | type | pack | description | aliases | priority |
+|------|------|------|-------------|---------|----------|
+| gsap-core | animation | gsap | GSAP 核心动画能力 | gsap, 动画, tweens | 5 |
+| gsap-scrolltrigger | animation | gsap | GSAP 滚动驱动动画 | 滚动, scroll, 视差 | 5 |
+| gsap-timeline | animation | gsap | GSAP 时间线编排 | 时间线, 序列, 编排 | 5 |
+| gsap-react | animation | gsap | GSAP React 集成 | react, nextjs, useGSAP | 4 |
+| gsap-frameworks | animation | gsap | GSAP 框架集成（Vue/Svelte） | vue, svelte, 框架 | 3 |
+| gsap-performance | animation | gsap | GSAP 性能优化 | 性能, 优化, 60fps | 3 |
+| gsap-plugins | animation | gsap | GSAP 插件系统 | 插件, scrollto, draggable | 3 |
+| gsap-utils | animation | gsap | GSAP 工具函数 | 工具, clamp, snap | 1 |
+
+### tools 包
+
+| name | type | pack | description | aliases | priority |
+|------|------|------|-------------|---------|----------|
+| anysearch | tool | tools | 实时多源搜索引擎 | 搜索, 查找, search | 4 |
+| better-icons | tool | tools | 图标搜索与获取（200+ 库） | 图标, icon, svg | 4 |
+| find-skills | tool | tools | 发现与安装社区 skill | 找技能, 发现, 安装 | 3 |
+| agent-builder | engineering | tools | 构建自定义 AI Agent | agent, 构建, 自动化 | 3 |
+| skill-creator | engineering | tools | 创建与优化 skill | 创建技能, 新建, skill | 3 |
+| vercel-react-best-practices | engineering | tools | React/Next.js 性能优化 | react, nextjs, 性能 | 3 |
+| setup-mcp | tool | tools | MCP 服务器配置 | mcp, 配置, 安装 | 2 |
+| agent-browser | tool | tools | 浏览器控制 Agent | 浏览器, browser, 自动化 | 2 |
+| self-improving-agent | memory | tools | 自动记忆管理与技能提取 | 记忆, 改进, 自动化 | 2 |
+| wrap | other | tools | WRAP 决策框架 | 决策, 选择, 判断 | 2 |
+
+### si 包
+
+| name | type | pack | description | aliases | priority |
+|------|------|------|-------------|---------|----------|
+| si-extract | memory | si | 将模式提取为可复用 skill | 提取, 技能化, 固化 | 2 |
+| si-promote | memory | si | 将记忆升级为项目规则 | 升级, 规则化, 固化 | 2 |
+| si-remember | memory | si | 手动保存重要记忆 | 记录, 保存, 记忆 | 2 |
+| si-review | memory | si | 分析记忆健康度与升级候选 | 审查, 分析, 健康 | 2 |
+| si-status | memory | si | 记忆健康仪表盘 | 状态, 仪表盘, 概览 | 2 |
+
+## 注册表维护
+
+新增 skill 时，按规范补全 6 字段后插入对应 type 区域。删除 skill 时，从注册表移除对应行。`skill-packs` 以本注册表为唯一匹配依据。
 
 ---
 
 # 🌍 生态抽象层
-
-不要写死路径逻辑。先构建两个逻辑集合：
 
 ```
 CLAUDE_SET =
@@ -32,271 +118,94 @@ CCSW_SET =
   ~/.cc-switch/.agents/skills/
 ```
 
-操作永远基于集合，而不是路径。
-
 ---
 
 # 🔐 执行安全规则
 
-每次执行写操作前：
-
-1. 创建锁文件：`~/.claude/.skill-lock`
-2. 若锁已存在 → 提示：`"Skill 系统正在被操作，请稍后再试"`
-3. 所有写操作完成后删除锁文件
-
----
-
-# 📋 list
-
-目标：生成完整生态地图
-
-执行：
-```bash
-echo "=== GLOBAL ===" && ls ~/.claude/skills/
-echo ""
-for pack in ~/.claude/skill-packs/*/; do
-  name=$(basename "$pack")
-  count=$(ls "$pack" 2>/dev/null | wc -l)
-  echo "=== PACK: $name ($count) ==="
-  ls "$pack"
-  echo ""
-done
-echo "=== CC-SWITCH (skills/) ===" && ls ~/.cc-switch/skills/ 2>/dev/null
-echo ""
-echo "=== CC-SWITCH (.agents/skills/) ===" && ls ~/.cc-switch/.agents/skills/ 2>/dev/null
-```
-
-输出结构：
-- skill 名称
-- 所在集合
-- 是否为 link（`[ -L "$path" ]` 检测）
-- 是否为副本（检查 `.SOURCE` 文件是否存在）
-- 是否存在 SKILL.md 文件
+写操作前：
+1. 创建锁文件 `~/.claude/.skill-lock`
+2. 锁已存在 → 提示 `"Skill 系统正在被操作，请稍后再试"`
+3. 操作完成后删除锁文件
 
 ---
 
-# 🔍 inspect <skill>
+# 📋 list — 生态地图
 
-显示单个 skill 的完整信息：
-
-1. **定位**：在 CLAUDE_SET 和 CCSW_SET 中搜索该 skill 目录
-2. **显示**：
-   - 所在位置（可能多处）
-   - 是否存在于两个生态
-   - 是否为 link
-   - 是否存在 `.SOURCE` 文件，若有则显示内容
-   - `shasum SKILL.md` 的 hash 值
-   - 是否 drifted（两处都存在但 hash 不一致）
+扫描 CLAUDE_SET + CCSW_SET，输出 skill 列表及属性（link/copy/SOURCE/SKILL.md）。
 
 ---
 
-# ⚖️ diff
+# 🔍 inspect <skill> — 详情
 
-构建去重集合：
-
-```
-CLAUDE_ALL = CLAUDE_SET 中所有 skill 去重（优先全局，其次包内）
-CCSW_ALL   = CCSW_SET 中所有 skill 去重
-```
-
-对每个 skill 分类：
-
-| 分类 | 判定 |
-|------|------|
-| `only-claude` | 仅在 CLAUDE_ALL |
-| `only-ccsw` | 仅在 CCSW_ALL |
-| `identical` | 两处都有，hash 一致 |
-| `drifted` | 两处都有，hash 不一致 |
-
-输出：
-
-```
-Only in Claude (x):
-  skill-a（design 包）
-  skill-b（tools 包）
-
-Only in cc-switch (x):
-  skill-c
-
-Identical (x):
-  skill-d
-  skill-e
-
-Drifted (x):
-  skill-f  [claude: a1b2c3]  [ccsw: d4e5f6]
-```
-
-若 drifted 存在，提示：**"建议运行 sync --repair"**
+显示该 skill 在注册表中的 6 字段 + 实际位置 + hash + drift 状态。
 
 ---
 
-# 🔄 sync
+# ⚖️ diff — 对比
 
-默认策略：**link**，失败则降级 **copy**。
-
-支持范围：
-- `sync all` — 同步所有包内 skill
-- `sync <pack>` — 同步某个包（design / gsap / tools / si）
-- `sync <skill>` — 同步单个 skill
-
-## link 策略
-
-```bash
-# 在 ~/.cc-switch/skills/ 创建符号链接指向源
-ln -s "<源路径>" ~/.cc-switch/skills/<skill-name>
-```
-
-## copy 策略（link 失败时降级）
-
-1. 复制目录到 `~/.cc-switch/.agents/skills/<skill-name>`
-2. 创建 `.SOURCE` 文件：
-
-```yaml
-source: <原路径>
-managed-by: skill-steward
-timestamp: <当前时间>
-```
-
-## sync --repair
-
-若检测 drifted：
-- 若副本为 link → 无需修复（自动跟随源）
-- 若副本为 copy → 用源覆盖副本
-- 若副本内容与源不同且副本可能被用户修改 → 提示用户确认
+CLAUDE_ALL vs CCSW_ALL，输出四类：only-claude / only-ccsw / identical / drifted。drifted 存在时提示 `sync --repair`。
 
 ---
 
-# 📦 move
+# 🔄 sync — 同步
 
-语法：
-- `move <skill> --to global` — 从包提升到全局
-- `move <skill> --to <pack>` — 从全局降级到指定包
-
-执行逻辑：
-1. 在 CLAUDE_SET 中定位 skill
-2. 移动目录到目标位置
-3. 检查 CCSW_SET 中是否存在该 skill 的副本/链接：
-   - link → 自动跟随，无需处理
-   - copy → 自动更新 `.SOURCE` 中的路径
-4. 自动执行 `sync --repair`
+策略：**link**（优先）→ 降级 **copy**（+ .SOURCE）。范围：`all` / `<pack>` / `<skill>`。`--repair` 覆盖 drifted 副本。
 
 ---
 
-# 🗑️ remove
+# 📦 move — 迁移
 
-执行逻辑：
-1. 在 CLAUDE_SET 和 CCSW_SET 中搜索该 skill
-2. 列出所有找到的位置
-3. 检查是否存在 cc-switch 副本（link 或 copy）
-4. **二次确认**：向用户展示将要删除的所有位置和内容摘要，要求确认
-5. 删除后自动执行 diff，展示变更结果
+`move <skill> --to global|<pack>` → 移动 + 更新注册表 + 自动 sync --repair。
 
 ---
 
-# 🩺 health
+# 🗑️ remove — 删除
 
-五项检查：
-
-| # | 检查项 | 检测方式 |
-|---|--------|---------|
-| 1 | 断链 | 遍历所有集合，检查 symlink 目标是否存在 |
-| 2 | 重复 | 同一 skill 名在 CLAUDE_SET 内出现多次 |
-| 3 | frontmatter 完整性 | `head -5 SKILL.md | grep -q "name:" && grep -q "description:"` |
-| 4 | drifted | shasum 对比 CLAUDE vs CCSW 同名 skill |
-| 5 | SOURCE 存在性 | 有 `.SOURCE` 的副本，其 source 路径是否仍有效 |
-
-输出：
-
-```
-Skill Ecosystem Health: <score>/100
-
-✔ 无断链
-⚠ 2 个 drifted
-✔ 无重复
-⚠ 1 个缺失 frontmatter
-✔ SOURCE 完整
-```
-
-评分规则：
-- 起始 100 分
-- 每个 drift -5
-- 每个断链 -10
-- 每个重复 -5
-- 缺失 frontmatter -5
-- SOURCE 缺失 -5
+搜索 → 列位置 → 查副本 → 二次确认 → 删除 → 更新注册表。
 
 ---
 
-# 📥 install
+# 📥 install — 安装
 
-语法：
-- `install <name>` — 安装到全局
-- `install <name> --to <pack>` — 安装到指定包
-
-执行：
-```bash
-npx skills add <name>
-```
-
-安装后自动运行 `health`。
+`install <name> [--to <pack>]` → `npx skills add` → 补注册表字段 → health。
 
 ---
 
-# 📤 export
+# 📤 export / 📥 import
 
-生成生态快照：
-
-```bash
-# 输出到 ~/.claude/skills-manifest.json
-```
-
-内容结构：
-```json
-{
-  "exported_at": "<timestamp>",
-  "global": ["5whys", "aar", "..."],
-  "packs": {
-    "design": ["design", "frontend-design", "..."],
-    "gsap": ["gsap-core", "..."],
-    "tools": ["anysearch", "..."],
-    "si": ["si-extract", "..."]
-  },
-  "cc-switch": ["5whys", "aar", "..."],
-  "drifted": ["skill-f"],
-  "hash_map": {
-    "skill-a": { "claude": "a1b2c3", "ccsw": "a1b2c3" }
-  }
-}
-```
+生成/读取 `~/.claude/skills-manifest.json`，含注册表完整数据。
 
 ---
 
-# 📥 import
+# 🩺 health — 健康检查
 
-读取 `~/.claude/skills-manifest.json`，重建结构：
+| # | 检查项 | 扣分 |
+|---|--------|:--:|
+| 1 | 断链 | -10 |
+| 2 | 重复 | -5 |
+| 3 | 注册表字段缺失 | -5 |
+| 4 | aliases 超 3 个 | -3 |
+| 5 | type 不在允许范围 | -5 |
+| 6 | drifted | -5 |
+| 7 | SOURCE 缺失 | -5 |
 
-1. 验证 manifest 格式
-2. 对比当前生态，提示差异
-3. 用户确认后执行重建
-4. 自动执行 `sync`
+输出：`Skill Ecosystem Health: <score>/100` + 逐项结果。
 
 ---
 
 # 🧭 与 skill-packs 的边界
 
-- `skill-packs`：只负责**读取和引导使用**
-- `skill-steward`：所有**结构性修改**的唯一入口
-
-用户说"用 design skill" → skill-packs 处理
-用户说"把 design 打包" → skill-steward 处理
-用户说"为什么 sync 后少了" → skill-steward diff 处理
+- `skill-packs`：只读注册表 + 调度执行
+- `skill-steward`：注册表维护 + 结构修改
+- 用户说"用 design skill" → skill-packs
+- 用户说"删掉 xxx" → skill-steward
 
 ---
 
 # 🏁 原则
 
-1. 单一真相源优先（link > copy）
-2. 不产生隐性漂移
-3. 所有写操作必须可审计
-4. 所有同步必须可检测
-5. 不自动做不可逆操作（remove 必须二次确认，import 必须用户确认）
+1. 注册表是单一真相源
+2. link > copy
+3. 所有写操作可审计
+4. 所有同步可检测
+5. 不可逆操作必须确认
